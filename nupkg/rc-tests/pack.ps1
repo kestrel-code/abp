@@ -3,10 +3,10 @@
 $rootFolder = (Get-Item -Path "../../" -Verbose).FullName
 $localPackagesFolder = "C:\Github\localpackages"
 
-# Delete existing nupkg files from local packages folder
-if (Test-Path $localPackagesFolder) {
-    Remove-Item (Join-Path $localPackagesFolder "*.nupkg") -Force -ErrorAction SilentlyContinue
-}
+# # Delete existing nupkg files from local packages folder
+# if (Test-Path $localPackagesFolder) {
+#     Remove-Item (Join-Path $localPackagesFolder "*.nupkg") -Force -ErrorAction SilentlyContinue
+# }
 
 # Rebuild all solutions
 foreach ($solutionPath in $solutions) {    
@@ -42,7 +42,7 @@ foreach($project in $projects) {
 	Set-Location $projectFolder
 
     #dotnet clean
-    dotnet pack -c Release --no-build -o $localPackagesFolder -- /maxcpucount
+    dotnet pack -c Release --no-build -o $localPackagesFolder /p:MaxCpuCount=1
 
     if (-Not $?) {
         Write-Error "Packaging failed for the project: $projectName" 

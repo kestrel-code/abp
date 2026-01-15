@@ -1,5 +1,6 @@
 . "..\common.ps1"
 
+$rootFolder = (Get-Item -Path "../../" -Verbose).FullName
 $localPackagesFolder = "C:\Github\localpackages"
 
 # Delete existing nupkg files from local packages folder

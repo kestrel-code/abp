@@ -1,3 +1,7 @@
+param(
+    [string]$version = ""
+)
+
 . "..\common.ps1"
 
 $rootFolder = (Get-Item -Path "../../" -Verbose).FullName
@@ -42,13 +46,22 @@ foreach($project in $projects) {
         Write-Info "[$i / $projectsCount] - Skipping MAUI project: $projectName"
         continue
     }
+	
+	# Skip if nupkg already exists for this version (only when version is specified)
+    if ($version -ne "") {
+        $nupkgFile = Join-Path $localPackagesFolder "$projectName.$version.nupkg"
+        if (Test-Path $nupkgFile) {
+            Write-Info "[$i / $projectsCount] - Skipping (already exists): $projectName.$version.nupkg"
+            continue
+        }
+    }
 		
 	# Create nuget pack
     Write-Info "[$i / $projectsCount] - Packing project: $projectName"
 	Set-Location $projectFolder
 
     #dotnet clean
-    dotnet pack -c Release --no-build -o $localPackagesFolder /p:MaxCpuCount=1
+    dotnet pack -c Release -o $localPackagesFolder /p:MaxCpuCount=1
 
     if (-Not $?) {
         Write-Error "Packaging failed for the project: $projectName" 

@@ -36,6 +36,12 @@ foreach($project in $projects) {
     $i += 1
     $projectFolder = Join-Path $rootFolder $project
 	$projectName = ($project -split '/')[-1]
+	
+	# Skip MAUI projects
+    if ($project -like "*MAUI*") {
+        Write-Info "[$i / $projectsCount] - Skipping MAUI project: $projectName"
+        continue
+    }
 		
 	# Create nuget pack
     Write-Info "[$i / $projectsCount] - Packing project: $projectName"
